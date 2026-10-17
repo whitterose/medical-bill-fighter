@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medical Bill Fighter: free, private medical bill toolkit</title>
+<meta name="description" content="Free, private, works offline. Find out what to do about a US medical bill, check it for common errors, and write itemized-bill, charity-care, dispute, debt-validation, surprise-billing and insurance-appeal letters in minutes. Nothing you type leaves your device.">
+<meta name="author" content="White Rose">
+<style>
+:root{--ink:#1d2330;--muted:#5b6475;--bg:#f7f5f2;--card:#fff;--line:#e3dfd8;--accent:#b0263b;--accent2:#7a1a2a;--ok:#1f7a4d;--warn:#a15c00;--bad:#b0263b;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{color:var(--accent2)}
+header.hero{background:linear-gradient(135deg,#2a1f2b,#5a1c2a 60%,#b0263b);color:#fff;padding:48px 20px 40px}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0 0 12px}
+.hero p{font-size:19px;max-width:720px;margin:0 0 18px;opacity:.95}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:4px 12px;font-size:14px}
+.byline{font-size:14px;opacity:.85;margin-top:16px}
+nav.toc{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding:8px 20px}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:15px}
+nav.toc a:hover,nav.toc a:focus{background:#f1ece6}
+section{padding:36px 0;border-bottom:1px solid var(--line)}
+h2{font-size:28px;margin:0 0 8px}
+h3{font-size:20px;margin:22px 0 8px}
+.lead{color:var(--muted);margin-top:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.grid{display:grid;gap:14px}
+@media(min-width:720px){.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:1fr 1fr 1fr}}
+label{display:block;font-weight:600;font-size:15px;margin:10px 0 4px}
+input[type=text],input[type=date],input[type=number],textarea,select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid #cfc8bd;border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:120px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus,a:focus{outline:3px solid #f2b8c2;outline-offset:2px}
+.q{border-top:1px dashed var(--line);padding:12px 0}
+.q:first-child{border-top:0}
+.q .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.q .opts label{font-weight:500;margin:0;display:flex;align-items:center;gap:6px;border:1px solid #cfc8bd;border-radius:999px;padding:6px 14px;cursor:pointer;background:#fff}
+.q .opts input{accent-color:var(--accent)}
+button,.btn{font:inherit;font-size:16px;font-weight:600;border:0;border-radius:10px;padding:10px 18px;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+button.secondary,.btn.secondary{background:#efe9e2;color:var(--ink)}
+button:hover{filter:brightness(1.07)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.plan ol{padding-left:22px}
+.plan li{margin:10px 0}
+.tag{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;border-radius:6px;margin-right:6px;vertical-align:2px}
+.tag.urgent{background:#fde2e6;color:var(--bad)}
+.tag.money{background:#e1f3ea;color:var(--ok)}
+.tag.info{background:#eee8ff;color:#4b3aa6}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{background:#faf8f5}
+td.num{text-align:right;white-space:nowrap}
+.flag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 7px;margin:2px 4px 2px 0}
+.flag.bad{background:#fde2e6;color:var(--bad)}
+.flag.warn{background:#fff1d6;color:var(--warn)}
+.letter{white-space:pre-wrap;font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.55;background:#fffdf9;border:1px solid var(--line);border-radius:10px;padding:22px;min-height:200px}
+.small{font-size:14px;color:var(--muted)}
+.note{background:#fff8e6;border:1px solid #f1d9a0;border-radius:10px;padding:12px 14px;font-size:15px}
+.ok{color:var(--ok)}
+details{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600}
+.script{background:#f4f8ff;border-left:4px solid #6b8bd6;padding:10px 14px;border-radius:6px;margin:8px 0;font-style:italic}
+.tip{background:linear-gradient(180deg,#fff,#fbf7f2)}
+.addr{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;margin:10px 0}
+.addr code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;background:#f3efe9;border-radius:8px;padding:8px 10px;word-break:break-all;user-select:all}
+.coin{font-weight:700;min-width:44px}
+.copybtn{padding:6px 12px;font-size:14px}
+footer{padding:30px 0 50px;color:var(--muted);font-size:14px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d2330;color:#fff;padding:10px 16px;border-radius:10px;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+@media print{
+  header.hero,nav.toc,section:not(.print-me),footer,.no-print,#toast{display:none!important}
+  body{background:#fff}
+  .print-me{border:0;padding:0}
+  .letter{border:0;padding:0;background:#fff;font-size:12pt}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Got a medical bill you can't pay, or one that looks wrong?</h1>
+    <p>Before you pay it, take 10 minutes here. Find out what to do next, check the bill for common mistakes, and get the letters you need written for you. It's free.</p>
+    <div class="badges">
+      <span class="badge">100% free</span>
+      <span class="badge">Nothing you type leaves your device</span>
+      <span class="badge">Works offline</span>
+      <span class="badge">No sign-up</span>
+    </div>
+    <div class="byline">Made by <strong>White Rose</strong> · For US patients · Last reviewed October 2026</div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Sections">
+  <div class="wrap">
+    <a href="#plan">1. My action plan</a>
+    <a href="#check">2. Check my bill</a>
+    <a href="#letters">3. Write my letter</a>
+    <a href="#scripts">4. Phone scripts</a>
+    <a href="#rights">5. My rights</a>
+    <a href="#help">6. Free help</a>
+    <a href="#tip">Support this</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="plan">
+  <h2>1. Get your action plan</h2>
+  <p class="lead">Answer what you can, then tap the button. You can skip any question you're not sure about.</p>
+  <div class="card" id="wizard">
+    <div class="q"><strong>Who sent the bill?</strong>
+      <div class="opts">
+        <label><input type="radio" name="sender" value="provider"> A hospital, doctor, or clinic</label>
+        <label><input type="radio" name="sender" value="collector"> A collection agency</label>
+        <label><input type="radio" name="sender" value="unsure"> Not sure</label>
+      </div></div>
+    <div class="q"><strong>Did you use health insurance for this care?</strong>
+      <div class="opts">
+        <label><input type="radio" name="ins" value="yes"> Yes</label>
+        <label><input type="radio" name="ins" value="no"> No, I'm uninsured or paid myself</label>
+      </div></div>
+    <div class="q"><strong>Was this an emergency room visit, or an ambulance ride by air?</strong>
+      <div class="opts">
+        <label><input type="radio" name="er" value="yes"> Yes</label>
+        <label><input type="radio" name="er" value="no"> No</label>
+      </div></div>
+    <div class="q"><strong>Did a doctor you didn't choose bill you separately as "out-of-network"?</strong> <span class="small">(This is common with anesthesiologists, radiologists, pathologists, and ER doctors.)</span>
+      <div class="opts">
+        <label><input type="radio" name="oon" value="yes"> Yes</label>
+        <label><input type="radio" name="oon" value="no"> No</label>
+        <label><input type="radio" name="oon" value="unsure"> Not sure</label>
+      </div></div>
+    <div class="q"><strong>Did your insurer deny the claim, or say a service wasn't covered?</strong>
+      <div class="opts">
+        <label><input type="radio" name="denied" value="yes"> Yes</label>
+        <label><input type="radio" name="denied" value="no"> No</label>
+      </div></div>
+    <div class="q"><strong>If you were uninsured, did you get a "Good Faith Estimate" before scheduled care, and is the bill much higher?</strong>
+      <div class="opts">
+        <label><input type="radio" name="gfe" value="yes"> Yes, it's at least $400 higher</label>
+        <label><input type="radio" name="gfe" value="no"> No / doesn't apply</label>
+      </div></div>
+    <div class="q"><strong>Does your household income make this bill hard or impossible to pay?</strong>
+      <div class="opts">
+        <label><input type="radio" name="income" value="yes"> Yes</label>
+        <label><input type="radio" name="income" value="no"> No, I just want it to be correct</label>
+      </div></div>
+    <div class="q"><strong>Does the bill show each charge separately, with codes?</strong>
+      <div class="opts">
+        <label><input type="radio" name="itemized" value="yes"> Yes, it's itemized</label>
+        <label><input type="radio" name="itemized" value="no"> No, it's mostly a total</label>
+      </div></div>
+    <div class="row">
+      <button type="button" id="makePlan">Show my plan</button>
+      <button type="button" class="secondary" id="resetPlan">Start over</button>
+    </div>
+  </div>
+  <div class="card plan" id="planOut" hidden aria-live="polite"></div>
+</section>
+
+<section id="check">
+  <h2>2. Check your bill for common errors</h2>
+  <p class="lead">Type in or paste the lines from your <em>itemized</em> bill. This only flags things worth asking about. It can't tell you for sure that a charge is wrong.</p>
+  <div class="card">
+    <div class="grid two">
+      <div><label for="admit">First day of care (optional)</label><input type="date" id="admit"></div>
+      <div><label for="discharge">Last day of care (optional)</label><input type="date" id="discharge"></div>
+    </div>
+    <label for="paste">Paste lines (one charge per line)</label>
+    <textarea id="paste" placeholder="Date, Code, Description, Qty, Amount
+2026-09-02, 99285, ER visit level 5, 1, 2450.00
+2026-09-02, 71046, Chest x-ray 2 views, 1, 412.00
+2026-09-02, 71046, Chest x-ray 2 views, 1, 412.00
+2026-09-03, J1100, Pharmacy misc, 6, 38.00"></textarea>
+    <p class="small">You can separate columns with commas, tabs, or <code>|</code>. Column order: date, code, description, quantity, amount. Columns you don't have can be left blank, e.g. <code>, , Lab work, 1, 85</code>.</p>
+    <div class="row">
+      <button type="button" id="analyze">Check these charges</button>
+      <button type="button" class="secondary" id="loadSample">Try an example</button>
+      <button type="button" class="secondary" id="clearCheck">Clear</button>
+    </div>
+  </div>
+  <div class="card" id="checkOut" hidden aria-live="polite"></div>
+</section>
+
+<section id="letters">
+  <h2>3. Write your letter</h2>
+  <p class="lead">Pick a letter, fill in your details, then copy, print, or download it. Everything stays on this page. Keep a copy of everything you send, and send important letters by certified mail with a return receipt.</p>
+  <div class="card no-print">
+    <label for="ltype">What do you need?</label>
+    <select id="ltype">
+      <option value="itemized">Ask for an itemized bill (and a pause on collections)</option>
+      <option value="fap">Ask for financial assistance / charity care</option>
+      <option value="dispute">Dispute billing errors</option>
+      <option value="selfpay">Ask for a self-pay discount or a payment plan</option>
+      <option value="validation">Tell a collection agency to prove the debt (validation)</option>
+      <option value="surprise">Dispute a surprise out-of-network bill (No Surprises Act)</option>
+      <option value="appeal">Appeal an insurance denial (internal appeal)</option>
+    </select>
+    <div class="grid two">
+      <div><label for="f_name">Your full name</label><input type="text" id="f_name" autocomplete="name"></div>
+      <div><label for="f_patient">Patient's name, if not you</label><input type="text" id="f_patient"></div>
+      <div><label for="f_addr">Your mailing address</label><input type="text" id="f_addr" autocomplete="address-line1"></div>
+      <div><label for="f_contact">Your phone or email (optional)</label><input type="text" id="f_contact"></div>
+      <div><label for="f_to">Send to (hospital, billing office, collector, or insurer)</label><input type="text" id="f_to"></div>
+      <div><label for="f_toaddr">Their address</label><input type="text" id="f_toaddr"></div>
+      <div><label for="f_acct">Account, claim, or reference number</label><input type="text" id="f_acct"></div>
+      <div><label for="f_dos">Date(s) of service</label><input type="text" id="f_dos" placeholder="e.g. Sept 2–3, 2026"></div>
+      <div><label for="f_amount">Amount billed ($)</label><input type="text" id="f_amount" placeholder="e.g. 4,812.00"></div>
+      <div><label for="f_member">Insurance member ID (if any)</label><input type="text" id="f_member"></div>
+    </div>
+    <div id="extraFields"></div>
+    <div class="row">
+      <button type="button" id="copyLetter">Copy letter</button>
+      <button type="button" class="secondary" id="printLetter">Print / Save as PDF</button>
+      <button type="button" class="secondary" id="dlLetter">Download .txt</button>
+    </div>
+    <p class="small">Tip: fill in the "issues" box with the flags from step 2, or tap <em>Use my flagged items</em> once you've run the checker.</p>
+  </div>
+  <div class="card print-me">
+    <div class="letter" id="letterOut" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="scripts">
+  <h2>4. What to say on the phone</h2>
+  <p class="lead">Write down the date, time, and name of everyone you talk to. Ask them to note on your account that you're reviewing the bill.</p>
+  <details open><summary>Ask for the itemized bill</summary>
+    <div class="script">"Hi, I'm calling about account number ___. Before I pay, I need a fully itemized bill showing every charge, with the billing codes, dates, and quantities. Can you mail or email that to me? And can you please put a hold on the account while I review it?"</div></details>
+  <details><summary>Ask about financial assistance (charity care)</summary>
+    <div class="script">"Does this hospital have a financial assistance policy? I'd like an application, the income limits, and a plain-language summary. I'd like to apply for this bill and any others from this hospital. Please don't send the account to collections while my application is being reviewed."</div>
+    <p class="small">Nonprofit hospitals must have a written financial assistance policy, and many for-profit hospitals have one too. You don't have to be "poor" to qualify. Some policies cover middle-income families.</p></details>
+  <details><summary>Ask for a self-pay discount</summary>
+    <div class="script">"I'm paying for this myself. What's your self-pay or prompt-pay discount on this balance? If I can't pay it all at once, what interest-free payment plan can you offer?"</div></details>
+  <details><summary>When a charge looks wrong</summary>
+    <div class="script">"I'm looking at line ___, code ___, on ___. I don't believe I received this service (or it's listed twice). Please review it and send me a corrected bill. Will you hold the account while that's reviewed?"</div></details>
+  <details><summary>When a collector calls</summary>
+    <div class="script">"I don't recognize this debt as valid yet. Please send me the written validation notice. I'll respond in writing." <br>(Don't confirm bank or card details, and don't agree to pay on the call.)</div>
+    <p class="small">If a caller pushes you to pay right away by gift card, wire, or crypto, it's almost certainly a scam. Hang up and call the hospital using the number on its official website.</p></details>
+</section>
+
+<section id="rights">
+  <h2>5. Know your rights (US)</h2>
+  <p class="lead">This is a short summary with links to official sources. Rules change, and states often add more protections.</p>
+  <div class="grid two">
+    <div class="card"><h3>Surprise bills (No Surprises Act)</h3>
+      <p>Since January 1, 2022, most insured people are protected from surprise out-of-network bills for emergency care, for some non-emergency care at in-network hospitals and surgery centers, and for air ambulances. If you're uninsured or paying yourself, you can usually get a <em>Good Faith Estimate</em>, and you may be able to dispute a bill that's at least $400 more than the estimate.</p>
+      <p class="small">Source: <a href="https://www.cms.gov/medical-bill-rights" rel="noopener">CMS: Medical bill rights</a>. Help line: <strong>1-800-985-3059</strong>.</p></div>
+    <div class="card"><h3>Nonprofit hospitals: financial assistance</h3>
+      <p>Nonprofit hospitals must have a written financial assistance policy (FAP). Before taking "extraordinary collection actions" (like credit reporting or lawsuits), they have to make reasonable efforts to see whether you qualify. They generally must accept your application for at least <strong>240 days</strong> after the first bill after you leave the hospital. If you're approved, they have to try to reverse any collection actions and refund what you overpaid.</p>
+      <p class="small">Source: <a href="https://www.irs.gov/charities-non-profits/billing-and-collections-section-501r6" rel="noopener">IRS: Section 501(r)(6)</a>.</p></div>
+    <div class="card"><h3>Debt collectors must prove it</h3>
+      <p>If you dispute a debt <strong>in writing within 30 days</strong> of getting the collector's validation notice, the collector has to stop collecting until it sends you verification.</p>
+      <p class="small">Source: <a href="https://www.consumerfinance.gov/ask-cfpb/can-a-debt-collector-still-collect-a-debt-after-ive-disputed-it-en-338/" rel="noopener">CFPB</a>; <a href="https://www.law.cornell.edu/uscode/text/15/1692g" rel="noopener">15 U.S.C. § 1692g</a>.</p></div>
+    <div class="card"><h3>Insurance denials can be appealed</h3>
+      <p>You generally have <strong>180 days</strong> from the denial notice to file an internal appeal. For care you've already received, the insurer usually has to decide within 60 days. If it still says no, you can ask for an external review.</p>
+      <p class="small">Source: <a href="https://www.healthcare.gov/appeal-insurance-company-decision/internal-appeals/" rel="noopener">HealthCare.gov: Internal appeals</a>.</p></div>
+    <div class="card"><h3>Credit reports</h3>
+      <p>Under their own voluntary policies, the three big credit bureaus leave off <em>paid</em> medical collections, medical collections under $500, and unpaid medical collections that are less than a year old. A broader federal rule was <strong>struck down in July 2025</strong>, so these are company policies, not federal law, and they can change. Some states have stronger laws.</p>
+      <p class="small">Sources: <a href="https://www.consumerfinance.gov/rules-policy/final-rules/prohibition-on-creditors-and-consumer-reporting-agencies-concerning-medical-information-regulation-v/" rel="noopener">CFPB notice on the vacated rule</a>; <a href="https://www.consumerfinance.gov/about-us/blog/medical-debt-anything-already-paid-or-under-500-should-no-longer-be-on-your-credit-report/" rel="noopener">CFPB blog</a>.</p></div>
+    <div class="card"><h3>Why it's worth checking</h3>
+      <p>In a KFF survey, <strong>43% of adults</strong> said they had gotten a medical or dental bill they believed had an error. In a 2024 study, 74% of people who contacted the billing office about a concern got the mistake fixed.</p>
+      <p class="small">Sources: <a href="https://pirg.org/edfund/media-center/new-consumer-guides-the-abcs-of-eobs-and-medical-bills/" rel="noopener">PIRG, citing KFF</a>; <a href="https://www.aarp.org/money/personal-finance/spot-fix-medical-billing-errors/" rel="noopener">AARP, citing JAMA Health Forum (2024)</a>.</p></div>
+  </div>
+</section>
+
+<section id="help">
+  <h2>6. Free help from real people</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Dollar For</strong> is a nonprofit that helps patients apply for hospital charity care for free: <a href="https://dollarfor.org" rel="noopener">dollarfor.org</a></li>
+      <li><strong>No Surprises help desk (CMS)</strong>: 1-800-985-3059. You can also file a complaint at <a href="https://www.cms.gov/medical-bill-rights" rel="noopener">cms.gov/medical-bill-rights</a></li>
+      <li><strong>Your state's Consumer Assistance Program</strong> can help with insurance appeals, and can even file one for you: <a href="https://www.healthcare.gov/appeal-insurance-company-decision/internal-appeals/" rel="noopener">see HealthCare.gov</a></li>
+      <li><strong>Problems with a debt collector?</strong> File a complaint with the CFPB: <a href="https://www.consumerfinance.gov/complaint/" rel="noopener">consumerfinance.gov/complaint</a></li>
+      <li><strong>Free legal aid</strong> if you're being sued: <a href="https://www.lawhelp.org" rel="noopener">LawHelp.org</a>. Never ignore court papers. Missing a deadline can lead to an automatic judgment against you.</li>
+    </ul>
+  </div>
+  <div class="note"><strong>Important:</strong> This toolkit gives general information and templates. It is not legal, medical, tax, or financial advice. For a lawsuit, a large balance, or anything urgent, talk to legal aid or a patient advocate.</div>
+</section>
+
+<section id="tip" class="tip">
+  <h2>Support this project (optional)</h2>
+  <p class="lead">This toolkit is free and always will be. There are no ads and no tracking, and you'll never be asked to sign up. If it saved you money and you'd like to help keep free tools like this coming, a small crypto tip is welcome. It's completely optional.</p>
+  <div class="card">
+    <div class="addr">
+      <span class="coin">SOL</span><code id="addr-sol">FBL1ez549NQscEm2Ly67TBxesknPcHfmRddnyiBF1kiA</code><button type="button" class="secondary copybtn" data-copy="addr-sol">Copy</button>
+      <span class="coin">ETH</span><code id="addr-eth">0xb46A6182Bf50EfC4012603803dEFe1CADd4Da4De</code><button type="button" class="secondary copybtn" data-copy="addr-eth">Copy</button>
+      <span class="coin">XRP</span><code id="addr-xrp">rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg</code><button type="button" class="secondary copybtn" data-copy="addr-xrp">Copy</button>
+      <span class="coin">XRP tag</span><code id="addr-xrptag">1476447851</code><button type="button" class="secondary copybtn" data-copy="addr-xrptag">Copy</button>
+    </div>
+    <p class="note"><strong>XRP: you must include the destination tag/memo <code>1476447851</code>.</strong> If you send XRP without it, the tip may be lost. ETH address: Ethereum mainnet only. Always check the address in your wallet before you send.</p>
+    <p class="small">Can't tip? Sharing this page with someone who's facing a big bill helps just as much. Tips are gifts, not payment for advice.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Medical Bill Fighter, by White Rose. This page uses no cookies and no analytics, and it never uploads anything. Everything runs in your browser, and you can save this page to use it offline.</p>
+    <p>Not affiliated with any hospital, insurer, or government agency. General information only, not legal advice. Last reviewed: October 2026.</p>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var $ = function(id){return document.getElementById(id);};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+function toast(msg){var t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove("show");},1800);}
+function copyText(text){
+  if(navigator.clipboard && window.isSecureContext){navigator.clipboard.writeText(text).then(function(){toast("Copied");},function(){fallbackCopy(text);});}
+  else fallbackCopy(text);
+}
+function fallbackCopy(text){var ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied");}catch(e){toast("Select and copy manually");}document.body.removeChild(ta);}
+
+/* ---------- 1. Action plan ---------- */
+function val(name){var el=document.querySelector('input[name="'+name+'"]:checked');return el?el.value:"";}
+$("makePlan").addEventListener("click",function(){
+  var a={sender:val("sender"),ins:val("ins"),er:val("er"),oon:val("oon"),denied:val("denied"),gfe:val("gfe"),income:val("income"),itemized:val("itemized")};
+  var steps=[];
+  steps.push(['urgent','Don\'t ignore it, and don\'t pay yet.','Call the number on the bill. Ask them to note that you\'re reviewing it and to hold it out of collections. Write down the date and the name of the person you spoke with.']);
+  if(a.sender==="collector"||a.sender==="unsure"){
+    steps.push(['urgent','Make the collector prove the debt, in writing, within 30 days.','If you got a validation notice, send a written dispute before the deadline printed on it. The collector then has to stop collecting until it verifies the debt. Use the <a href="#letters" data-letter="validation">validation letter</a>.']);
+    steps.push(['info','Find the original hospital or doctor.','You can often still apply for the hospital\'s financial assistance, ask for an itemized bill, or fix insurance billing even after an account goes to collections.']);
+  }
+  if(a.itemized!=="yes"){
+    steps.push(['money','Ask for a fully itemized bill.','A summary bill hides duplicates and errors. Ask for every charge with its code, date, and quantity, plus your insurer\'s Explanation of Benefits (EOB). Use the <a href="#letters" data-letter="itemized">itemized bill letter</a>.']);
+  } else {
+    steps.push(['money','Check every line.','Run your itemized charges through the <a href="#check">bill checker</a>, and compare them with your EOB and what you remember happening.']);
+  }
+  if(a.ins==="yes" && (a.er==="yes"||a.oon==="yes"||a.oon==="unsure")){
+    steps.push(['money','You may be protected from surprise billing.','For emergency care, air ambulances, and out-of-network doctors at an in-network hospital, the No Surprises Act usually limits you to what you\'d pay in-network. Use the <a href="#letters" data-letter="surprise">surprise bill letter</a>, and call 1-800-985-3059 if the provider won\'t fix it.']);
+  }
+  if(a.ins==="no" && a.gfe==="yes"){
+    steps.push(['money','Dispute the bill against your Good Faith Estimate.','If the bill is at least $400 more than your Good Faith Estimate, you may be able to start a dispute through CMS. Call 1-800-985-3059 and act quickly, because there are deadlines.']);
+  }
+  if(a.denied==="yes"){
+    steps.push(['urgent','Appeal the denial. You usually have 180 days.','Ask your doctor\'s office for a letter of medical necessity, then file an internal appeal. Use the <a href="#letters" data-letter="appeal">appeal letter</a>. Your state\'s Consumer Assistance Program can help or file it for you.']);
+  }
+  if(a.income==="yes"||a.income===""){
+    steps.push(['money','Apply for financial assistance (charity care).','Nonprofit hospitals must have a financial assistance policy, and many cover middle-income families. Apply even if you\'re not sure you qualify, and ask them to apply it to past bills too. Use the <a href="#letters" data-letter="fap">financial assistance letter</a>, or get free help from <a href="https://dollarfor.org" rel="noopener">Dollar For</a>.']);
+  }
+  if(a.ins==="no"){
+    steps.push(['money','Ask for a self-pay discount.','Many providers discount bills for patients paying themselves, but only if you ask. Use the <a href="#letters" data-letter="selfpay">self-pay discount / payment plan letter</a>.']);
+  }
+  steps.push(['info','If you still owe something, ask for an interest-free payment plan.','Agree only to a monthly amount you can actually keep paying. Avoid putting medical bills on a credit card or taking a medical loan with interest without thinking it through.']);
+  steps.push(['info','Keep a paper trail.','Keep copies of every letter, bill, and EOB, plus notes from every call. Send important letters by certified mail with a return receipt.']);
+  var html='<h3>Your plan</h3><ol>'+steps.map(function(s){return '<li><span class="tag '+s[0]+'">'+(s[0]==="urgent"?"Do first":s[0]==="money"?"Can save money":"Good to know")+'</span><strong>'+s[1]+'</strong><br>'+s[2]+'</li>';}).join("")+'</ol><p class="small">General information, not legal advice.</p>';
+  var out=$("planOut");out.innerHTML=html;out.hidden=false;out.scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("resetPlan").addEventListener("click",function(){document.querySelectorAll('#wizard input[type=radio]').forEach(function(r){r.checked=false;});$("planOut").hidden=true;});
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-letter]");if(a){$("ltype").value=a.getAttribute("data-letter");renderExtra();renderLetter();}});
+
+/* ---------- 2. Bill checker ---------- */
+var VAGUE=/\b(misc|miscellaneous|supplies?|sundry|general|pharmacy\s*(gen|misc)?|room\s*&?\s*board\s*misc|other|kit|unlisted|services?\s*-?\s*other|admin|convenience|facility\s*fee)\b/i;
+var lastFlags=[];
+function parseLine(line){
+  var parts=line.split(/\t|\||,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(function(p){return p.trim().replace(/^"|"$/g,"");});
+  while(parts.length<5)parts.push("");
+  if(parts.length>5){var amt=parts[parts.length-1],qty=parts[parts.length-2];parts=[parts[0],parts[1],parts.slice(2,parts.length-2).join(", "),qty,amt];}
+  var amount=parseFloat(String(parts[4]).replace(/[$,\s]/g,""));
+  var qty=parseFloat(String(parts[3]).replace(/[^0-9.]/g,""));
+  return {date:parts[0],code:parts[1].toUpperCase(),desc:parts[2],qty:isNaN(qty)?1:qty,amount:isNaN(amount)?0:amount,raw:line};
+}
+function parseDate(s){if(!s)return null;var d=new Date(s);if(isNaN(d))return null;return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function money(n){return "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+$("analyze").addEventListener("click",function(){
+  var lines=$("paste").value.split(/\r?\n/).map(function(l){return l.trim();}).filter(function(l){return l && !/^date\s*[,|\t]/i.test(l);});
+  var out=$("checkOut");
+  if(!lines.length){out.hidden=false;out.innerHTML="<p>Paste at least one charge line first.</p>";return;}
+  var rows=lines.map(parseLine);
+  var admit=parseDate($("admit").value),dis=parseDate($("discharge").value);
+  var seen={};rows.forEach(function(r,i){var k=(r.date+"|"+(r.code||r.desc.toLowerCase())+"|"+r.amount);(seen[k]=seen[k]||[]).push(i);});
+  var total=0,flagged=0,flaggedAmt=0;lastFlags=[];
+  var body=rows.map(function(r,i){
+    var f=[];total+=r.amount;
+    var k=(r.date+"|"+(r.code||r.desc.toLowerCase())+"|"+r.amount);
+    if(seen[k].length>1 && seen[k][0]!==i)f.push(["bad","Possible duplicate of line "+(seen[k][0]+1)]);
+    if(VAGUE.test(r.desc))f.push(["warn","Vague description: ask what this is"]);
+    if(!r.code)f.push(["warn","No billing code: ask for it"]);
+    if(r.qty>=5)f.push(["warn","High quantity ("+r.qty+"): confirm"]);
+    var d=parseDate(r.date);
+    if(d && admit && d<admit)f.push(["bad","Dated before your care began"]);
+    if(d && dis && d>dis)f.push(["bad","Dated after your care ended"]);
+    if(d && dis && d.getTime()===dis.getTime() && dis>(admit||0) && /room|board|bed\b/i.test(r.desc))f.push(["warn","Room charge on your discharge day: usually not billed"]);
+    if(r.amount<0)f.push(["warn","Credit/adjustment: make sure it's applied"]);
+    if(f.length){flagged++;flaggedAmt+=Math.max(0,r.amount);lastFlags.push("Line "+(i+1)+": "+[r.date,r.code,r.desc].filter(Boolean).join(" ")+" ("+money(r.amount)+"): "+f.map(function(x){return x[1];}).join("; "));}
+    return "<tr><td>"+(i+1)+"</td><td>"+esc(r.date)+"</td><td>"+esc(r.code)+"</td><td>"+esc(r.desc)+"</td><td class=num>"+esc(r.qty)+"</td><td class=num>"+money(r.amount)+"</td><td>"+(f.length?f.map(function(x){return '<span class="flag '+x[0]+'">'+esc(x[1])+'</span>';}).join(""):'<span class="ok small">no obvious issue</span>')+"</td></tr>";
+  }).join("");
+  out.hidden=false;
+  out.innerHTML='<h3>Results</h3><p><strong>'+rows.length+'</strong> charges totaling <strong>'+money(total)+'</strong>. <strong>'+flagged+'</strong> worth asking about'+(flagged?' ('+money(flaggedAmt)+')':'')+'.</p>'+
+   '<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Date</th><th>Code</th><th>Description</th><th>Qty</th><th>Amount</th><th>Flags</th></tr></thead><tbody>'+body+'</tbody></table></div>'+
+   '<h3>Also check by hand</h3><ul class="small">'+
+   '<li>Were you charged for a full day on the day you went home? Hospitals usually don\'t bill a room charge for the discharge day.</li>'+
+   '<li>Are there tests or medicines you refused, didn\'t get, or brought from home?</li>'+
+   '<li>Does the ER level (codes 99281–99285) match how serious the visit really was? Level 5 is for the most severe cases.</li>'+
+   '<li>Does the bill match your insurer\'s EOB? Is the "patient responsibility" amount the same?</li>'+
+   '<li>Has the bill been billed to the right insurance, with the right member ID?</li></ul>'+
+   (flagged?'<div class="row"><button type="button" id="useFlags">Use my flagged items in a dispute letter</button></div>':'');
+  var uf=$("useFlags");if(uf)uf.addEventListener("click",function(){$("ltype").value="dispute";renderExtra();var t=$("x_issues");if(t){t.value=lastFlags.join("\n");}renderLetter();document.getElementById("letters").scrollIntoView({behavior:"smooth"});});
+});
+$("loadSample").addEventListener("click",function(){
+  $("admit").value="2026-09-02";$("discharge").value="2026-09-03";
+  $("paste").value="2026-09-02, 99285, ER visit level 5, 1, 2450.00\n2026-09-02, 71046, Chest x-ray 2 views, 1, 412.00\n2026-09-02, 71046, Chest x-ray 2 views, 1, 412.00\n2026-09-02, 80053, Comprehensive metabolic panel, 1, 310.00\n2026-09-03, 0121, Room and board semi-private, 1, 3100.00\n2026-09-03, , Pharmacy misc, 6, 38.00\n2026-09-05, 85025, CBC with differential, 1, 145.00";
+  $("analyze").click();
+});
+$("clearCheck").addEventListener("click",function(){$("paste").value="";$("admit").value="";$("discharge").value="";$("checkOut").hidden=true;lastFlags=[];});
+
+/* ---------- 3. Letters ---------- */
+var EXTRA={
+  itemized:[],
+  fap:[["x_household","Household size (optional)","text"],["x_income","Approximate yearly household income (optional)","text"]],
+  dispute:[["x_issues","Charges you're disputing (one per line)","textarea"]],
+  selfpay:[["x_monthly","Monthly amount you can afford ($)","text"]],
+  validation:[["x_noticedate","Date you received their notice","text"]],
+  surprise:[["x_provider","Out-of-network provider or doctor","text"],["x_facility","Hospital or facility where you were treated","text"],["x_inn","What you'd owe in-network, if you know it ($)","text"]],
+  appeal:[["x_service","Service or treatment that was denied","text"],["x_reason","Reason the insurer gave","text"],["x_why","Why it should be covered (your doctor's reasons, history, etc.)","textarea"]]
+};
+function renderExtra(){
+  var t=$("ltype").value,box=$("extraFields"),keep={};
+  box.querySelectorAll("input,textarea").forEach(function(el){keep[el.id]=el.value;});
+  box.innerHTML='<div class="grid two">'+EXTRA[t].map(function(f){return '<div'+(f[2]==="textarea"?' style="grid-column:1/-1"':'')+'><label for="'+f[0]+'">'+f[1]+'</label>'+(f[2]==="textarea"?'<textarea id="'+f[0]+'"></textarea>':'<input type="text" id="'+f[0]+'">')+'</div>';}).join("")+'</div>';
+  Object.keys(keep).forEach(function(k){if($(k))$(k).value=keep[k];});
+  if(t==="dispute" && lastFlags.length && $("x_issues") && !$("x_issues").value){$("x_issues").value=lastFlags.join("\n");}
+}
+function g(id,ph){var el=$(id);var v=el?el.value.trim():"";return v||("["+ph+"]");}
+function opt(id){var el=$(id);return el?el.value.trim():"";}
+function today(){return new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"});}
+function header(){
+  var who=g("f_name","Your name");
+  var lines=[who,g("f_addr","Your address")];var c=opt("f_contact");if(c)lines.push(c);
+  lines.push("",today(),"",g("f_to","Billing office / company name"),g("f_toaddr","Their address"),"");
+  var ref=[];ref.push("Account/Reference #: "+g("f_acct","account number"));
+  var p=opt("f_patient");ref.push("Patient: "+(p||who));
+  ref.push("Date(s) of service: "+g("f_dos","dates of service"));
+  var amt=opt("f_amount");if(amt)ref.push("Amount billed: $"+amt.replace(/^\$/,""));
+  var m=opt("f_member");if(m)ref.push("Insurance member ID: "+m);
+  return lines.join("\n")+ref.join("\n")+"\n\n";
+}
+function sign(){return "\n\nThank you,\n\n\n"+g("f_name","Your name")+"\n\nEnclosures: copies of the bill and any supporting documents (keep your originals)";}
+var BODY={
+  itemized:function(){return "RE: Request for itemized bill\n\nTo the Billing Department:\n\nI am reviewing the bill for the account above. Please send me a complete, itemized statement that lists every charge separately, including:\n\n  - the date of each service\n  - the billing code for each item (CPT/HCPCS, revenue code, and any NDC for drugs)\n  - a plain description, the quantity, and the unit price\n  - all payments, insurance adjustments, and the remaining balance\n\nPlease also send a copy of your financial assistance policy, a plain-language summary, and an application.\n\nWhile I review the itemized bill, I ask that you place this account on hold and not send it to collections or report it to any credit bureau. Please confirm in writing that you've done this.";},
+  fap:function(){var h=opt("x_household"),i=opt("x_income");return "RE: Request for financial assistance (charity care)\n\nTo the Financial Assistance / Patient Financial Services Department:\n\nI am requesting financial assistance for the account above. Please send me your financial assistance policy, a plain-language summary, and an application, or treat this letter as my request to apply."+(h||i?"\n\nFor your initial review: my household size is "+(h||"[number]")+" and my approximate yearly household income is "+(i?"$"+i.replace(/^\$/,""):"[amount]")+".":"")+"\n\nPlease review this account, and any other balances I have with your facility, under your policy. While my application is pending, I ask that you suspend all collection activity, including referral to a collection agency and credit reporting. I understand that nonprofit hospitals must make reasonable efforts to determine eligibility before taking extraordinary collection actions, and that applications are generally accepted for at least 240 days after the first post-discharge bill (26 CFR 1.501(r)-6).\n\nIf I qualify, please adjust the balance, reverse any collection actions, and refund any amount I overpaid. Please send your decision in writing.";},
+  dispute:function(){var issues=opt("x_issues")||"[List each charge: date, code, description, amount, and why you're disputing it]";return "RE: Dispute of billing errors\n\nTo the Billing Department:\n\nI have reviewed my itemized bill and am disputing the following charges:\n\n"+issues.split(/\n/).map(function(l){return "  - "+l.replace(/^\s*[-•]\s*/,"");}).join("\n")+"\n\nPlease review these items, give me documentation that supports any charge you believe is correct (for example, the relevant medical record entries), and send me a corrected bill.\n\nWhile this dispute is under review, please place the account on hold and do not send it to collections or report it to any credit bureau. If any part of this balance should have been billed to my insurance, please rebill it with the correct information.";},
+  selfpay:function(){var m=opt("x_monthly");return "RE: Request for self-pay discount and payment plan\n\nTo the Billing Department:\n\nI am responsible for paying this balance myself. Please let me know what self-pay, uninsured, or prompt-pay discount you offer, and apply it to this account.\n\nI also request an interest-free payment plan"+(m?" of $"+m.replace(/^\$/,"")+" per month":"")+" for any remaining balance. Please confirm the plan terms in writing, and confirm that the account will not be sent to collections as long as I make the agreed payments.\n\nPlease also send me your financial assistance policy and application, since I may qualify.";},
+  validation:function(){var nd=opt("x_noticedate");return "RE: Dispute and request for validation of debt\n\nTo Whom It May Concern:\n\n"+(nd?"I received your notice dated or delivered on "+nd+". ":"")+"I dispute this debt and request validation under the Fair Debt Collection Practices Act (15 U.S.C. 1692g). Please send me:\n\n  - the name and address of the original creditor\n  - an itemized statement showing how the amount you claim was calculated, including any interest or fees\n  - proof that you are authorized to collect this debt\n  - a copy of the itemized bill from the original provider and any insurance payments or adjustments\n\nUntil you send verification, please stop all collection activity on this debt, as the law requires. Please do not report this debt to any credit bureau, or if you already have, report it as disputed.\n\nPlease contact me only in writing at the address above.\n\nThis letter is not an acknowledgment that I owe this debt.";},
+  surprise:function(){return "RE: Surprise billing dispute (No Surprises Act)\n\nTo the Billing Department:\n\nI received a bill from "+g("x_provider","provider name")+" for care I received at "+g("x_facility","hospital/facility name")+". I believe this bill is protected by the federal No Surprises Act, which in most cases limits what I owe for emergency services, for non-emergency services from out-of-network providers at an in-network facility, and for air ambulance services to my in-network cost-sharing amount.\n\n"+(opt("x_inn")?"Based on my insurance, my in-network cost-sharing should be about $"+opt("x_inn").replace(/^\$/,"")+".\n\n":"")+"Please correct the bill so that it reflects only my in-network cost-sharing, or explain in writing why you believe these protections don't apply (including any written consent you believe I signed to waive them).\n\nWhile this is resolved, please place the account on hold and do not send it to collections. If I don't receive a corrected bill, I plan to file a complaint with the No Surprises Help Desk (1-800-985-3059).";},
+  appeal:function(){return "RE: Request for internal appeal of denied claim\n\nTo the Appeals Department:\n\nI am requesting an internal appeal of your decision to deny coverage for "+g("x_service","service/treatment")+". The reason you gave for the denial was: "+g("x_reason","reason from the denial letter")+".\n\nI believe this service should be covered because:\n"+g("x_why","explain why, e.g. it was medically necessary as documented by my doctor, it's a covered benefit under my plan, or the provider was in-network")+"\n\nI've enclosed supporting documents, which may include a letter of medical necessity from my doctor and the relevant medical records. Please send me a copy of all documents, records, and criteria used in deciding my claim, including the plan provisions you relied on.\n\nPlease send your decision in writing. If the denial is upheld, please include instructions for requesting an external review.";}
+};
+function renderLetter(){var t=$("ltype").value;$("letterOut").textContent=header()+BODY[t]()+sign();}
+$("ltype").addEventListener("change",function(){renderExtra();renderLetter();});
+document.getElementById("letters").addEventListener("input",renderLetter);
+$("copyLetter").addEventListener("click",function(){copyText($("letterOut").textContent);});
+$("printLetter").addEventListener("click",function(){window.print();});
+$("dlLetter").addEventListener("click",function(){var b=new Blob([$("letterOut").textContent],{type:"text/plain"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="medical-bill-letter-"+$("ltype").value+".txt";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);});
+renderExtra();renderLetter();
+
+/* ---------- Tip copy ---------- */
+document.querySelectorAll("[data-copy]").forEach(function(b){b.addEventListener("click",function(){copyText($(b.getAttribute("data-copy")).textContent.trim());});});
+})();
+</script>
+</body>
+</html>

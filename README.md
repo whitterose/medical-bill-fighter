@@ -1,4 +1,4 @@
-# Medical Bill Fighter (by White Rose)
+# Medical Bill Fighter (by Zelda Rose)
 
 `index.html` is the whole tool. It's one file, with no dependencies and no backend, no cookies, analytics, or network requests. It works offline. To use it, open the file in any browser.
 
